@@ -59,11 +59,12 @@ var configDefault = configRoot{
 	HTTP: configHTTP{
 		Listen: ":8080",
 	},
-	Streams: []configStream{configStream{
-		Description: "Channel 1",
-		Listen:      ":60006",
-		Kind:        configStreamKindString{Value: configStreamKindVideoWebM},
-	},
+	Streams: []configStream{
+		configStream{
+			Description: "Channel 1",
+			Listen:      ":60006",
+			Kind:        configStreamKindString{Value: configStreamKindVideoWebM},
+		},
 		configStream{
 			Description: "Radio 1",
 			Listen:      ":60007",
