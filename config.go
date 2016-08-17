@@ -1,6 +1,10 @@
 package main
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
+	"os"
+)
 
 type configRoot struct {
 	HTTP    configHTTP     `json:"http"`
@@ -44,8 +48,8 @@ func (s configStreamKindString) MarshalJSON() ([]byte, error) {
 
 func (s *configStreamKindString) UnmarshalJSON(value []byte) error {
 	m := map[string]configStreamKind{
-		"video-webm": configStreamKindVideoWebM,
-		"opus-webm":  configStreamKindAudioOpus,
+		`"video-webm"`: configStreamKindVideoWebM,
+		`"audio-opus"`: configStreamKindAudioOpus,
 	}
 	v, ok := m[string(value)]
 	if !ok {
@@ -70,4 +74,14 @@ var configDefault = configRoot{
 			Listen:      ":60007",
 			Kind:        configStreamKindString{Value: configStreamKindAudioOpus},
 		}},
+}
+
+func configParseFile(file *os.File) (*configRoot, error) {
+	decoder := json.NewDecoder(file)
+	config := configRoot{}
+	err := decoder.Decode(&config)
+	if err != nil {
+		return nil, err
+	}
+	return &config, nil
 }
