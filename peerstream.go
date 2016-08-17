@@ -14,29 +14,45 @@ type rtpStream struct {
 	RTCP chan []byte
 }
 
-type temporalBuffer struct {
+type psTemporalBuffer struct {
 	PacketAssembly *ml.PacketAssembly
 	LastUpdated    time.Time
 }
 
-type stream struct {
-	assemblyBuffers   map[uint32]*temporalBuffer
-	assemblyReadyChan chan []byte
-	assemblyLifetime  time.Duration
-	rtpStreams        []rtpStream
+type pStream struct {
+	inboundConn      *net.UDPConn
+	assemblyBuffers  map[uint32]*psTemporalBuffer
+	assemblyLifetime time.Duration
+	rtpStreams       []rtpStream
 }
 
-func (s *stream) ListenInbound(conn *net.UDPConn) {
+func newPStream(conn *net.UDPConn, numMediaStreams int) *pStream {
+	stream := pStream{}
+	stream.inboundConn = conn
+	stream.assemblyLifetime = 10 * time.Second
+	stream.rtpStreams = make([]rtpStream, numMediaStreams)
+	for i := 0; i < numMediaStreams; i++ {
+		stream.rtpStreams[0].RTP = make(chan []byte)
+		stream.rtpStreams[0].RTCP = make(chan []byte)
+	}
+	return &stream
+}
+
+func (s *pStream) RTPStreams() []rtpStream {
+	return s.rtpStreams[:]
+}
+
+func (s *pStream) ListenInbound() {
 	for {
-		var data []byte
-		_, err := conn.Read(data)
+		data := make([]byte, 65536)
+		n, err := s.inboundConn.Read(data)
 		if err != nil {
-			logger.WithField("error", err).Error("Cannot read() on UDP socket")
+			logger.Error("Cannot read() on UDP socket: ", err)
 			continue // maybe break/return
 		}
-		packet, err := ml.ParsePacket(data)
+		packet, err := ml.ParsePacket(data[:n])
 		if err != nil {
-			logger.WithField("error", err).Warning("Cannot parse UDP packet")
+			logger.Warning("Cannot parse UDP packet: ", err)
 			continue
 		}
 		// easy case: the packet doesn't need to be re-assembled
@@ -55,7 +71,7 @@ func (s *stream) ListenInbound(conn *net.UDPConn) {
 		if !ok {
 			// first packet for this sequence or sequence too old
 			logger.WithFields(logFields).Debug("Received fragment of a new packet")
-			buf = &temporalBuffer{PacketAssembly: ml.NewPacketAssembly(packet), LastUpdated: time.Now()}
+			buf = &psTemporalBuffer{PacketAssembly: ml.NewPacketAssembly(packet), LastUpdated: time.Now()}
 			s.assemblyBuffers[packet.Sequence] = buf
 		}
 		logger.WithFields(logFields).Debug("Adding packet to assembly")
@@ -69,10 +85,10 @@ func (s *stream) ListenInbound(conn *net.UDPConn) {
 	}
 }
 
-func (s *stream) handleGrapesMessage(data []byte) {
+func (s *pStream) handleGrapesMessage(data []byte) {
 	grapesMsg, err := grapes.ParseMessage(data)
 	if err != nil {
-		logger.WithField("error", err).Warning("Cannot parse GRAPES message")
+		logger.Warning("Cannot parse GRAPES message: ", err)
 		return
 	}
 	switch grapesMsg.Type {
@@ -85,18 +101,17 @@ func (s *stream) handleGrapesMessage(data []byte) {
 	}
 }
 
-func (s *stream) handleChunks(msg *grapes.Message) {
+func (s *pStream) handleChunks(msg *grapes.Message) {
 	l := len(msg.Content)
 	for consumed := 0; consumed < l; {
 		chunk, b, err := grapes.ParseChunk(msg.Content[consumed:])
 		if err != nil {
 			logger.WithFields(log.Fields{
-				"error":       err,
 				"transaction": msg.TransactionID,
 				"chunk":       chunk.ID,
 				"timestamp":   chunk.Timestamp,
 				"offset":      consumed,
-			}).Warning("Cannot parse GRAPES chunk")
+			}).Warning("Cannot parse GRAPES chunk: ", err)
 			return
 		}
 		logger.WithFields(log.Fields{
@@ -110,17 +125,16 @@ func (s *stream) handleChunks(msg *grapes.Message) {
 	}
 }
 
-func (s *stream) handleRTPEnvelopes(chunk *grapes.Chunk) {
+func (s *pStream) handleRTPEnvelopes(chunk *grapes.Chunk) {
 	l := len(chunk.Content)
 	for consumed := 0; consumed < l; {
 		e, b, err := grapes.ParseRTPEnvelope(chunk.Content[consumed:])
 		if err != nil {
 			logger.WithFields(log.Fields{
-				"error":  err,
 				"chunk":  chunk.ID,
 				"offset": consumed,
 				"stream": e.StreamID,
-			}).Warn("Cannot parse RTP envelope")
+			}).Warn("Cannot parse RTP envelope: ", err)
 			return
 		}
 		logger.WithFields(log.Fields{
@@ -133,7 +147,7 @@ func (s *stream) handleRTPEnvelopes(chunk *grapes.Chunk) {
 	}
 }
 
-func (s *stream) dispatchRTPPackets(env *grapes.RTPEnvelope) {
+func (s *pStream) dispatchRTPPackets(env *grapes.RTPEnvelope) {
 	if int(env.StreamID) >= len(s.rtpStreams)/2 {
 		logger.WithFields(log.Fields{
 			"stream": env.StreamID,
@@ -149,7 +163,7 @@ func (s *stream) dispatchRTPPackets(env *grapes.RTPEnvelope) {
 	}
 }
 
-func (s *stream) CleanPartialAssemblies() {
+func (s *pStream) CleanPartialAssemblies() {
 	for seq, buf := range s.assemblyBuffers {
 		if time.Now().Sub(buf.LastUpdated) > s.assemblyLifetime {
 			delete(s.assemblyBuffers, seq)
