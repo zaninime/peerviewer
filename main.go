@@ -52,7 +52,9 @@ func main() {
 
 	initGPipelines(config.Streams)
 
-	http.ListenAndServe(":8080", nil)
+	if err = http.ListenAndServe(":8080", httpInit()); err != nil {
+		logger.Panic("Error while listening on HTTP: ", err)
+	}
 }
 
 func initPeerStreams(streamConfig []configStream) error {

@@ -15,6 +15,7 @@ type configHTTP struct {
 	Listen string `json:"listen"`
 }
 
+//go:generate stringer -type configStreamKind config.go
 type configStream struct {
 	Description string                 `json:"description"`
 	Listen      string                 `json:"listen"`
