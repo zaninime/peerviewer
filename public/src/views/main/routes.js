@@ -1,8 +1,8 @@
-import React from 'react'
-import {Route, IndexRoute} from 'react-router'
+import React from 'react';
+import {Route, IndexRoute} from 'react-router';
 
-import Container from './Container'
-import IndexPage from './indexPage/IndexPage'
+import Container from './Container';
+import IndexPage from './indexPage/IndexPage';
 
 export const makeMainRoutes = () => {
   return (
@@ -17,7 +17,7 @@ export const makeMainRoutes = () => {
       {/* inline loading */}
       <IndexRoute component={IndexPage} />
     </Route>
-  )
-}
+  );
+};
 
-export default makeMainRoutes
+export default makeMainRoutes;

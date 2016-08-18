@@ -4,6 +4,6 @@ export const About = (props) => (
   <div>
     The about page
   </div>
-)
+);
 
 export default About;

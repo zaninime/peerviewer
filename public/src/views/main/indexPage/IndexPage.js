@@ -15,7 +15,7 @@ export class IndexPage extends React.Component {
           <Link to="about">About</Link>
         </p>
       </div>
-    )
+    );
   }
 }
 

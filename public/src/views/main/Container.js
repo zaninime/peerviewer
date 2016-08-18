@@ -1,7 +1,7 @@
-import React, { PropTypes as T } from 'react'
+import React, { PropTypes as T } from 'react';
 
-import Header from 'components/Header/Header'
-import styles from './styles.module.css'
+import Header from 'components/Header/Header';
+import styles from './styles.module.css';
 
 export class Container extends React.Component {
   renderChildren() {
@@ -20,12 +20,12 @@ export class Container extends React.Component {
           {this.renderChildren()}
         </div>
       </div>
-    )
+    );
   }
 }
 
 Container.contextTypes = {
   router: T.object
-}
+};
 
-export default Container
+export default Container;

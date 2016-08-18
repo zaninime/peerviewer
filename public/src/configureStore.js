@@ -1,6 +1,6 @@
+/* globals __DEBUG__ */
 import { browserHistory } from 'react-router';
 import { bindActionCreatorsToStore } from 'redux-module-builder';
-import { createApiMiddleware } from 'redux-module-builder/api';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createStore, compose, applyMiddleware } from 'redux';
@@ -11,22 +11,16 @@ export const configureStore = ({
   userInitialState = {}}) => {
 
     let middleware = [
-      createApiMiddleware({
-        baseUrl: __ROOT_URL__,
-        headers: {
-          'X-Requested-By': 'webviewer client'
-        }
-      }),
       thunkMiddleware,
       routerMiddleware(historyType)
-    ]
+    ];
 
     let tools = [];
     if (__DEBUG__) {
       const DevTools = require('containers/DevTools/DevTools').default;
       let devTools = window.devToolsExtension ? window.devToolsExtension : DevTools.instrument;
       if (typeof devTools === 'function') {
-        tools.push(devTools())
+        tools.push(devTools());
       }
     }
 
@@ -43,7 +37,7 @@ export const configureStore = ({
 
     const history = syncHistoryWithStore(historyType, store, {
       adjustUrlOnReplay: true
-    })
+    });
 
     if (module.hot) {
       module.hot.accept('./rootReducer', () => {
@@ -53,5 +47,5 @@ export const configureStore = ({
     }
 
     const boundActions = bindActionCreatorsToStore(actions, store);
-    return {store, actions: boundActions, history}
-}
+    return {store, actions: boundActions, history};
+};

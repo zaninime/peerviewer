@@ -1,5 +1,5 @@
-import React, { PropTypes as T } from 'react'
-import {Link} from 'react-router'
+import React, { PropTypes as T } from 'react';
+import {Link} from 'react-router';
 
 import styles from './styles.module.css';
 
@@ -14,16 +14,16 @@ export class Header extends React.Component {
           Fullstack.io
         </section>
       </div>
-    )
+    );
   }
 }
 
 Header.propTypes = {
   title: T.string
-}
+};
 
 Header.defaultProps = {
   title: 'webviewer'
-}
+};
 
-export default Header
+export default Header;
