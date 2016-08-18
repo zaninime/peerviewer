@@ -77,10 +77,14 @@ var configDefault = configRoot{
 		}},
 }
 
-func configParseFile(file *os.File) (*configRoot, error) {
+func configParseFile(path string) (*configRoot, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
 	decoder := json.NewDecoder(file)
 	config := configRoot{}
-	err := decoder.Decode(&config)
+	err = decoder.Decode(&config)
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	flagConfigPath     = kingpin.Flag("config", "Config file path.").Default("config.json").Short('c').File()
+	flagConfigPath     = kingpin.Flag("config", "Config file path.").Default("config.json").Short('c').String()
 	flagDebug          = kingpin.Flag("debug", "Debug enabled.").Short('d').Bool()
 	flagConfigTemplate = kingpin.Flag("template", "Print a template configuration file and exit.").Bool()
 	//verbose = kingpin.Flag("verbose", "Verbose mode.").Short('v').Bool()
