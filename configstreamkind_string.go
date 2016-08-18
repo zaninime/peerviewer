@@ -4,13 +4,13 @@ package main
 
 import "fmt"
 
-const _configStreamKind_name = "configStreamKindVideoWebMconfigStreamKindAudioOpus"
+const configStreamKindName = "configStreamKindVideoWebMconfigStreamKindAudioOpus"
 
-var _configStreamKind_index = [...]uint8{0, 25, 50}
+var configStreamKindIndex = [...]uint8{0, 25, 50}
 
 func (i configStreamKind) String() string {
-	if i < 0 || i >= configStreamKind(len(_configStreamKind_index)-1) {
+	if i < 0 || i >= configStreamKind(len(configStreamKindIndex)-1) {
 		return fmt.Sprintf("configStreamKind(%d)", i)
 	}
-	return _configStreamKind_name[_configStreamKind_index[i]:_configStreamKind_index[i+1]]
+	return configStreamKindName[configStreamKindIndex[i]:configStreamKindIndex[i+1]]
 }
