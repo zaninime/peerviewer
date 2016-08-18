@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -20,7 +21,7 @@ func httpInit() http.Handler {
 	api := m.PathPrefix("/api").Subrouter()
 	m.HandleFunc("/stream/{streamID}", httpLoggingMiddleware(httpHandleStream)).Methods("GET").Name("stream")
 	m.HandleFunc("/{rest:.*}", httpLoggingMiddleware(httpHandleStatic)).Methods("GET").Name("static")
-	api.HandleFunc("/streams", httpJSONHeaderMiddleware(httpHandleAPIStreams(m)))
+	api.HandleFunc("/streams", httpLoggingMiddleware(httpJSONHeaderMiddleware(httpHandleAPIStreams(m)))).Name("api.streams")
 	fileBox = rice.MustFindBox("public/dist")
 	return m
 }
@@ -43,15 +44,22 @@ func httpHandleAPIStreams(router *mux.Router) func(w http.ResponseWriter, r *htt
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		type stream struct {
-			Description string
-			Kind        string
-			URL         string
+			Description string `json:"description"`
+			MediaType   string `json:"mediaType"`
+			URL         string `json:"url"`
 		}
 		streams := make([]stream, len(config.Streams))
 		for i, v := range config.Streams {
 			s := &streams[i]
 			s.Description = v.Description
-			s.Kind = strconv.Itoa(int(v.Kind.Value))
+			switch v.Kind.Value {
+			case configStreamKindVideoWebM:
+				s.MediaType = "video"
+			case configStreamKindAudioOpus:
+				s.MediaType = "audio"
+			default:
+				panic(fmt.Errorf("Unhandled media type: %s", v.Kind.Value.String()))
+			}
 			var streamURL *url.URL
 			streamURL, err = router.Get("stream").URL("streamID", strconv.Itoa(i))
 			if err != nil {
