@@ -1,10 +1,9 @@
 /* globals __DEBUG__ */
 import { browserHistory } from 'react-router';
-import { bindActionCreatorsToStore } from 'redux-module-builder';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createStore, compose, applyMiddleware } from 'redux';
-import { rootReducer, actions, initialState } from './rootReducer';
+import rootReducer from 'reducers/rootReducer';
 
 export const configureStore = ({
   historyType = browserHistory,
@@ -32,7 +31,7 @@ export const configureStore = ({
 
     const store = finalCreateStore(
       rootReducer,
-      Object.assign({}, initialState, userInitialState)
+      Object.assign({}, userInitialState)
     );
 
     const history = syncHistoryWithStore(historyType, store, {
@@ -40,12 +39,11 @@ export const configureStore = ({
     });
 
     if (module.hot) {
-      module.hot.accept('./rootReducer', () => {
-        const {rootReducer} = require('./rootReducer');
+      module.hot.accept('reducers/rootReducer', () => {
+        const {rootReducer} = require('reducers/rootReducer');
         store.replaceReducer(rootReducer);
       });
     }
 
-    const boundActions = bindActionCreatorsToStore(actions, store);
-    return {store, actions: boundActions, history};
+    return {store, history};
 };
