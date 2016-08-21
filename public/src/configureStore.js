@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createStore, compose, applyMiddleware } from 'redux';
-import rootReducer from 'reducers/rootReducer';
+import rootReducer from 'reducers';
 
 export const configureStore = ({
   historyType = browserHistory,
@@ -39,8 +39,8 @@ export const configureStore = ({
     });
 
     if (module.hot) {
-      module.hot.accept('reducers/rootReducer', () => {
-        const {rootReducer} = require('reducers/rootReducer');
+      module.hot.accept('reducers', () => {
+        const {rootReducer} = require('reducers');
         store.replaceReducer(rootReducer);
       });
     }

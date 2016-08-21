@@ -44,6 +44,7 @@ func httpHandleAPIStreams(router *mux.Router) func(w http.ResponseWriter, r *htt
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		type stream struct {
+			ID          string `json:"id"`
 			Description string `json:"description"`
 			MediaType   string `json:"mediaType"`
 			URL         string `json:"url"`
@@ -51,6 +52,7 @@ func httpHandleAPIStreams(router *mux.Router) func(w http.ResponseWriter, r *htt
 		streams := make([]stream, len(config.Streams))
 		for i, v := range config.Streams {
 			s := &streams[i]
+			s.ID = strconv.Itoa(i)
 			s.Description = v.Description
 			switch v.Kind.Value {
 			case configStreamKindVideoWebM:
@@ -75,6 +77,7 @@ func httpHandleAPIStreams(router *mux.Router) func(w http.ResponseWriter, r *htt
 func httpJSONHeaderMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
+		w.Header().Add("Access-Control-Allow-Origin", "*")
 		next.ServeHTTP(w, r)
 	})
 }

@@ -71,7 +71,8 @@ config.resolve.alias = {
   reducers: join(src, 'reducers'),
   actions: join(src, 'actions'),
   utils: join(src, 'utils'),
-  styles: join(src, 'styles')
+  api: join(src, 'api'),
+  util: join(src, 'util')
 };
 // end Roots
 

@@ -1,14 +1,16 @@
 import React, { PropTypes as T } from 'react';
 import {Link} from 'react-router';
+import AvailableStreamList from 'containers/AvailableStreamList/AvailableStreamList';
 
 export class IndexPage extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hello from generated content</h1>
+        <h1>PeerStreamer Web Viewer</h1>
         <p>
-          For more information about the `react-gen` package and set up, check out the <a href="https://www.fullstackreact.com/articles/react-tutorial-cloning-yelp/">Blog post on building a yelp clone with React</a>.
+          Available streams:
         </p>
+        <AvailableStreamList />
         <p>
           <Link to="about">About</Link>
         </p>
