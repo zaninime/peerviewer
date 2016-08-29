@@ -2,13 +2,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from 'containers/App/App';
+import App from 'containers/app';
 
 import {browserHistory} from 'react-router';
 //import makeRoutes from './routes';
 
-import * as api from './api/streams';
-window['api'] = api;
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
 
 const initialState = {};
 import {configureStore} from './configureStore';

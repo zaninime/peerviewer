@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import { getStreamDetails, getStreamsLoaded } from 'reducers';
 import { push } from 'react-router-redux';
-import Player from 'components/Player/Player';
+import Player from 'components/player';
 import { fetchStreams } from 'actions/streams';
 
-const mapStateToProps = (state, {streamID}) => ({
-  ...getStreamDetails(state, streamID),
+const mapStateToProps = (state, {streamId}) => ({
+  ...getStreamDetails(state, streamId),
   loaded: getStreamsLoaded(state)
 });
 

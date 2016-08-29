@@ -2,28 +2,28 @@ import { combineReducers } from 'redux';
 
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case 'RECEIVE_STREAMS':
-      return action.response.entities.streams;
-    default:
-      return state;
+  case 'RECEIVE_STREAMS':
+    return action.response.entities.streams;
+  default:
+    return state;
   }
 };
 
 const ids = (state = [], action) => {
   switch (action.type) {
-    case 'RECEIVE_STREAMS':
-      return action.response.result;
-    default:
-      return state;
+  case 'RECEIVE_STREAMS':
+    return action.response.result;
+  default:
+    return state;
   }
 };
 
 const loaded = (state = false, action) => {
   switch (action.type) {
-    case 'RECEIVE_STREAMS':
-      return true;
-    default:
-      return state;
+  case 'RECEIVE_STREAMS':
+    return true;
+  default:
+    return state;
   }
 };
 

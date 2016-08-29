@@ -18,3 +18,7 @@
   rules:
     strict: 0
     semi: 1
+    indent: [1, 2]
+    keyword-spacing: 1
+    space-before-blocks: 1
+

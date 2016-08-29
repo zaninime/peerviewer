@@ -1,13 +1,13 @@
 import React, {PropTypes as T} from 'react';
-import Player from 'containers/Player/Player';
+import Player from 'containers/player';
 
 const Watch = ({params}) => {
   return (
     <div>
-      Hello world! Stream: {params.streamID}
+      Hello world! Stream: {params.streamId}
 
       <div>
-        <Player streamID={params.streamID}/>
+        <Player streamId={params.streamId}/>
       </div>
     </div>
   );

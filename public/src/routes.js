@@ -1,25 +1,26 @@
 import React from 'react';
 import {Route, IndexRoute} from 'react-router';
-import IndexPage from './views/indexPage/IndexPage';
+import Home from 'views/home';
+import Navigation from 'containers/navigation';
 
 export const makeRoutes = () => {
   return (
-    <Route path='/'>
+    <Route path='/' component={Navigation}>
       {/* Lazy-loading */}
-      <Route path="watch/:streamID" getComponent={(location, cb) => {
-          require.ensure([], (require) => {
-            const mod = require('./views/watch/Watch');
-            cb(null, mod.default);
-          });
-        }} />
+      <Route path="watch/:streamId" getComponent={(location, cb) => {
+        require.ensure([], (require) => {
+          const mod = require('./views/watch');
+          cb(null, mod.default);
+        });
+      }} />
       <Route path="about" getComponent={(location, cb) => {
         require.ensure([], (require) => {
-          const mod = require('./views/about/About');
+          const mod = require('views/about');
           cb(null, mod.default);
         });
       }} />
       {/* inline loading */}
-      <IndexRoute component={IndexPage} />
+      <IndexRoute component={Home} />
     </Route>
   );
 };

@@ -9,41 +9,41 @@ export const configureStore = ({
   historyType = browserHistory,
   userInitialState = {}}) => {
 
-    let middleware = [
-      thunkMiddleware,
-      routerMiddleware(historyType)
-    ];
+  let middleware = [
+    thunkMiddleware,
+    routerMiddleware(historyType)
+  ];
 
-    let tools = [];
-    if (__DEBUG__) {
-      const DevTools = require('containers/DevTools/DevTools').default;
-      let devTools = window.devToolsExtension ? window.devToolsExtension : DevTools.instrument;
-      if (typeof devTools === 'function') {
-        tools.push(devTools());
-      }
+  let tools = [];
+  if (__DEBUG__) {
+    const DevTools = require('containers/devtools').default;
+    let devTools = window.devToolsExtension ? window.devToolsExtension : DevTools.instrument;
+    if (typeof devTools === 'function') {
+      tools.push(devTools());
     }
+  }
 
-    let finalCreateStore;
-    finalCreateStore = compose(
+  let finalCreateStore;
+  finalCreateStore = compose(
       applyMiddleware(...middleware),
       ...tools
     )(createStore);
 
-    const store = finalCreateStore(
+  const store = finalCreateStore(
       rootReducer,
       Object.assign({}, userInitialState)
     );
 
-    const history = syncHistoryWithStore(historyType, store, {
-      adjustUrlOnReplay: true
+  const history = syncHistoryWithStore(historyType, store, {
+    adjustUrlOnReplay: true
+  });
+
+  if (module.hot) {
+    module.hot.accept('reducers', () => {
+      const {rootReducer} = require('reducers');
+      store.replaceReducer(rootReducer);
     });
+  }
 
-    if (module.hot) {
-      module.hot.accept('reducers', () => {
-        const {rootReducer} = require('reducers');
-        store.replaceReducer(rootReducer);
-      });
-    }
-
-    return {store, history};
+  return {store, history};
 };

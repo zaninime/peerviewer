@@ -22,20 +22,20 @@ export default class Player extends React.Component {
 
   render() {
     switch (this.props.mediaType) {
-      case 'video':
-        return (
+    case 'video':
+      return (
           <video src={this.props.url} autoPlay controls preload="none">
             Your browser doesn't support the video tag!
           </video>
         );
-      case 'audio':
-        return (
+    case 'audio':
+      return (
           <audio src={this.props.url} autoPlay controls preload="none">
             Your browser doesn't support the audio tag!
           </audio>
         );
-      default:
-        return <div>This stream doesn't exists.</div>;
+    default:
+      return <div>This stream doesn't exists.</div>;
     }
   }
 }

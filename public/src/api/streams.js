@@ -9,7 +9,7 @@ export const fetchStreams = () => new Promise((resolve, reject) => {
       try {
         const data = JSON.parse(req.responseText);
         resolve(data);
-      } catch(e) {
+      } catch (e) {
         reject(e);
       }
     } else {

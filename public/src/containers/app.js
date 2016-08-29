@@ -1,6 +1,8 @@
 import React, { PropTypes as T } from 'react';
 import { Router } from 'react-router';
 import { Provider } from 'react-redux';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { Style } from 'radium';
 
 class App extends React.Component {
   static contextTypes = {
@@ -39,22 +41,25 @@ class App extends React.Component {
   get devTools () {
     if (__DEBUG__) {
       if (!window.devToolsExtension) {
-        const DevTools = require('containers/DevTools/DevTools').default;
+        const DevTools = require('containers/devtools').default;
         return <DevTools />;
       }
     }
   }
 
   render () {
-     return (
+    return (
        <Provider store={this.props.store}>
-         <div style={{ height: '100%' }}>
-           {this.content}
-           {this.devTools}
-         </div>
+        <MuiThemeProvider>
+          <div style={{ height: '100%' }}>
+            <Style rules={{body: {margin: '0px'}}}/>
+            {this.content}
+            {this.devTools}
+           </div>
+        </MuiThemeProvider>
         </Provider>
      );
-   }
+  }
 }
 
 export default App;
