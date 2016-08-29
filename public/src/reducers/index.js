@@ -4,6 +4,10 @@ import streams, * as fromStreams from './streams';
 
 export default combineReducers({routing, streams});
 
+export const getStreamsLoaded = (state) => {
+  return fromStreams.getStreamsLoaded(state.streams);
+};
+
 export const getAvailableStreams = (state) => {
   return fromStreams.getAvailableStreams(state.streams);
 };

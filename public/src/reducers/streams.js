@@ -18,7 +18,20 @@ const ids = (state = [], action) => {
   }
 };
 
-export default combineReducers({byId, ids});
+const loaded = (state = false, action) => {
+  switch (action.type) {
+    case 'RECEIVE_STREAMS':
+      return true;
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({byId, ids, loaded});
+
+export const getStreamsLoaded = (state) => {
+  return state.loaded;
+};
 
 export const getAvailableStreams = (state) => {
   return state.ids.map(id => {

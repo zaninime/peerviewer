@@ -2,8 +2,13 @@ import React from 'react';
 
 export default class Player extends React.Component {
   componentWillMount() {
-    if (this.props.url === undefined) {
-      this.props.goHome();
+    const { loaded, url, fetchStreams, goHome } = this.props;
+    if (!loaded) {
+      fetchStreams();
+      return;
+    }
+    if (url === undefined) {
+      goHome();
     }
   }
 
