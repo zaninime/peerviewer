@@ -1,2 +1,2 @@
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL = '/api';
 export const STREAM_LIST = BASE_URL + '/streams';
