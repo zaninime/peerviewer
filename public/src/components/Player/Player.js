@@ -12,6 +12,14 @@ export default class Player extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { loaded, url, goHome } = nextProps;
+    if (!loaded) return;
+    if (url === undefined) {
+      goHome();
+    }
+  }
+
   render() {
     switch (this.props.mediaType) {
       case 'video':
