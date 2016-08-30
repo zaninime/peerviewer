@@ -28,6 +28,7 @@ type gPipelineAudioOpus struct {
 
 func newGPipelineAudioOpus(id int) *gPipelineAudioOpus {
 	p := gPipelineAudioOpus{}
+	p.connections = make(map[int]*net.TCPConn)
 	p.rtpSrc = gst.ElementFactoryMake("appsrc", "RTP Source")
 	audioCaps := gst.NewCapsSimple("application/x-rtp", glib.Params{
 		"media":         "audio",
@@ -50,15 +51,15 @@ func newGPipelineAudioOpus(id int) *gPipelineAudioOpus {
 
 	opusDepay := gst.ElementFactoryMake("rtpopusdepay", "rtpopusdepay")
 	opusDecoder := gst.ElementFactoryMake("opusdec", "opusdec")
-	sink := gst.ElementFactoryMake("multifdsink", "multifdsink")
-	sink.ConnectNoi("client-fd-removed", p.onClientFdRemoved, nil)
+	p.sink = gst.ElementFactoryMake("multifdsink", "multifdsink")
+	p.sink.ConnectNoi("client-fd-removed", p.onClientFdRemoved, nil)
 
 	pipe := gst.NewPipeline(fmt.Sprintf("stream-%d", id))
-	pipe.Add(p.rtpSrc, p.rtcpSrc, rtpbin, opusDepay, opusDecoder, sink)
+	pipe.Add(p.rtpSrc, p.rtcpSrc, rtpbin, opusDepay, opusDecoder, p.sink)
 	p.pipeline = pipe
 
 	rtpbin.LinkFiltered(opusDepay, audioCaps)
-	opusDepay.Link(opusDecoder, sink)
+	opusDepay.Link(opusDecoder, p.sink)
 
 	pipe.SetState(gst.STATE_PLAYING)
 	return &p

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -27,7 +28,27 @@ func httpInit() http.Handler {
 }
 
 func httpHandleStream(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Stream"))
+	vars := mux.Vars(r)
+	streamID, err := strconv.Atoi(vars["streamID"])
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("Bad request"))
+		return
+	}
+	if streamID >= len(config.Streams) {
+		w.WriteHeader(400)
+		w.Write([]byte("Bad request"))
+		return
+	}
+
+	conn, _, err := w.(http.Hijacker).Hijack()
+	if err != nil {
+		logger.Warning("Cannot hijack HTTP session: ", err)
+		return
+	}
+
+	pipeline := gPipelines[streamID]
+	(*pipeline).AddReceiver(conn.(*net.TCPConn))
 }
 
 func httpHandleStatic(w http.ResponseWriter, r *http.Request) {

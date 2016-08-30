@@ -43,7 +43,7 @@ func main() {
 		logger.Fatal("Unable to load config, ", err)
 	}
 
-	logger.Info("Webviewer starting")
+	logger.Info("Peerviewer starting")
 
 	err = initPeerStreams(config.Streams)
 	if err != nil {
@@ -96,7 +96,7 @@ func initPeerStreams(streamConfig []configStream) error {
 }
 
 func initGPipelines(streamConfig []configStream) {
-	gPipelines := make([]*gPipeline, len(streamConfig))
+	gPipelines = make([]*gPipeline, len(streamConfig))
 	for i, cfg := range streamConfig {
 		var p gPipeline
 		switch cfg.Kind.Value {
