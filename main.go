@@ -52,7 +52,7 @@ func main() {
 
 	initGPipelines(config.Streams)
 
-	if err = http.ListenAndServe(":8080", httpInit()); err != nil {
+	if err = http.ListenAndServe(config.HTTP.Listen, httpInit()); err != nil {
 		logger.Panic("Error while listening on HTTP: ", err)
 	}
 }
