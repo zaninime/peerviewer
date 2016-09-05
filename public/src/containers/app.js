@@ -51,8 +51,8 @@ class App extends React.Component {
     return (
        <Provider store={this.props.store}>
         <MuiThemeProvider>
-          <div style={{ height: '100%' }}>
-            <Style rules={{body: {margin: '0px'}}}/>
+          <div style={{height: '100%'}}>
+            <Style rules={{body: {margin: '0px', fontFamily: 'Roboto, sans-serif', height: '100%'}, html: {height: '100%'}, '#root': {height: '100%'}}}/>
             {this.content}
             {this.devTools}
            </div>

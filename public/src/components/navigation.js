@@ -13,6 +13,7 @@ import ShowChart from 'material-ui/svg-icons/editor/show-chart';
 
 const styles = {
   margin: '0 px',
+  height: '100%'
 };
 
 const Navigation = (props) => {
@@ -20,22 +21,22 @@ const Navigation = (props) => {
     <div style={styles}>
       <AppBar
         title={props.title}
-        iconClassNameRight="muidocs-icon-navigation-expand-more"
+        onLeftIconButtonTouchTap={() => {props.setDrawerState(true)}}
       />
       <Drawer
           docked={false}
-          open={true}
-          onRequestChange={null}
+          open={props.drawerOpen}
+          onRequestChange={props.setDrawerState}
         >
           <AppBar
             title="Menu"
-            iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+            onLeftIconButtonTouchTap={() => {props.setDrawerState(false)}}
           />
-          <MenuItem onTouchTap={null} leftIcon={<Home />}>Home</MenuItem>
+          <MenuItem onTouchTap={() => {props.navigateTo('/'); props.setDrawerState(false)}} leftIcon={<Home />}>Home</MenuItem>
           <MenuItem onTouchTap={null} leftIcon={<ShowChart />} disabled={true}>Statistics</MenuItem>
           <MenuItem onTouchTap={null} leftIcon={<Settings />} disabled={true}>Settings</MenuItem>
           <Divider/>
-          <MenuItem onTouchTap={null} leftIcon={<InfoOutline />}>About</MenuItem>
+          <MenuItem onTouchTap={() => {props.navigateTo('/about'); props.setDrawerState(false)}} leftIcon={<InfoOutline />}>About</MenuItem>
         </Drawer>
       {props.children}
     </div>);

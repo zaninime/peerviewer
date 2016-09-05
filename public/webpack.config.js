@@ -17,7 +17,7 @@ const devHost   = process.env.HOST || 'localhost';
 const devPort   = process.env.PORT || 3000;
 
 const setPublicPath = process.env.SET_PUBLIC_PATH !== 'false';
-const publicPath  = (isDev && setPublicPath) ? `//${devHost}:${devPort}/` : '';
+const publicPath  = (isDev && setPublicPath) ? `//${devHost}:${devPort}/` : '/';
 
 const root = resolve(__dirname);
 const src = join(root, 'src');
@@ -31,7 +31,7 @@ var config = getConfig({
   html: function (context) {
     return {
       'index.html': context.defaultTemplate({
-        title: 'webviewer',
+        title: 'PeerViewer',
         publicPath,
         meta: {}
       })

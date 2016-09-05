@@ -24,13 +24,13 @@ export default class Player extends React.Component {
     switch (this.props.mediaType) {
     case 'video':
       return (
-          <video src={this.props.url} autoPlay controls preload="none">
+          <video style={this.props.style} src={this.props.url} autoPlay controls preload="none">
             Your browser doesn't support the video tag!
           </video>
         );
     case 'audio':
       return (
-          <audio src={this.props.url} autoPlay controls preload="none">
+          <audio style={this.props.style} src={this.props.url} autoPlay controls preload="none">
             Your browser doesn't support the audio tag!
           </audio>
         );
@@ -39,5 +39,3 @@ export default class Player extends React.Component {
     }
   }
 }
-
-export default Player;
