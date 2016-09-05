@@ -80,6 +80,10 @@ func httpHandleAPIStreams(router *mux.Router) func(w http.ResponseWriter, r *htt
 				s.MediaType = "video"
 			case configStreamKindAudioOpus:
 				s.MediaType = "audio"
+			case configStreamKindAudioTest1:
+				s.MediaType = "audio"
+			case configStreamKindVideoTest1:
+				s.MediaType = "video"
 			default:
 				panic(fmt.Errorf("Unhandled media type: %s", v.Kind.Value.String()))
 			}

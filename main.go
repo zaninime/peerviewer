@@ -87,6 +87,10 @@ func initPeerStreams(streamConfig []configStream) error {
 			numMediaStreams = 2
 		case configStreamKindAudioOpus:
 			numMediaStreams = 1
+		case configStreamKindAudioTest1:
+			numMediaStreams = 1
+		case configStreamKindVideoTest1:
+			numMediaStreams = 1
 		}
 		s := newPStream(conn, numMediaStreams)
 		peerStreams[i] = s
@@ -105,6 +109,10 @@ func initGPipelines(streamConfig []configStream) {
 		case configStreamKindAudioOpus:
 			p = newGPipelineAudioOpus(i)
 			go p.ListenForData(peerStreams[i].RTPStreams())
+		case configStreamKindAudioTest1:
+			p = newGPipelineAudioTest1(i)
+		case configStreamKindVideoTest1:
+			p = newGPipelineVideoTest1(i)
 		}
 		gPipelines[i] = &p
 	}

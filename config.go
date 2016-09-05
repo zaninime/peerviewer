@@ -31,14 +31,18 @@ type configStreamKindString struct {
 const (
 	configStreamKindVideoWebM configStreamKind = iota
 	configStreamKindAudioOpus
+	configStreamKindAudioTest1
+	configStreamKindVideoTest1
 )
 
 var errConfigInvalidStreamKind = errors.New("config: invalid stream kind")
 
 func (s configStreamKindString) MarshalJSON() ([]byte, error) {
 	m := map[configStreamKind][]byte{
-		configStreamKindVideoWebM: []byte(`"video-webm"`),
-		configStreamKindAudioOpus: []byte(`"audio-opus"`),
+		configStreamKindVideoWebM:  []byte(`"video-webm"`),
+		configStreamKindAudioOpus:  []byte(`"audio-opus"`),
+		configStreamKindAudioTest1: []byte(`"audio-test1"`),
+		configStreamKindVideoTest1: []byte(`"video-test1"`),
 	}
 	v, ok := m[s.Value]
 	if !ok {
@@ -49,8 +53,10 @@ func (s configStreamKindString) MarshalJSON() ([]byte, error) {
 
 func (s *configStreamKindString) UnmarshalJSON(value []byte) error {
 	m := map[string]configStreamKind{
-		`"video-webm"`: configStreamKindVideoWebM,
-		`"audio-opus"`: configStreamKindAudioOpus,
+		`"video-webm"`:  configStreamKindVideoWebM,
+		`"audio-opus"`:  configStreamKindAudioOpus,
+		`"audio-test1"`: configStreamKindAudioTest1,
+		`"video-test1"`: configStreamKindVideoTest1,
 	}
 	v, ok := m[string(value)]
 	if !ok {
