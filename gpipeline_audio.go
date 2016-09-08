@@ -43,16 +43,17 @@ func newGPipelineAudioOpus(id int) *gPipelineAudioOpus {
 	rtcpSrcPad.Link(rtcpSinkPad)
 
 	opusDepay := gst.ElementFactoryMake("rtpopusdepay", "rtpopusdepay")
+	oggMux := gst.ElementFactoryMake("oggmux", "oggmux")
 	//opusDecoder := gst.ElementFactoryMake("opusdec", "opusdec")
 	p.sink = gst.ElementFactoryMake("multifdsink", "multifdsink")
 	p.sink.ConnectNoi("client-fd-removed", p.onClientFdRemoved, nil)
 
 	pipe := gst.NewPipeline(fmt.Sprintf("stream-%d", id))
-	pipe.Add(p.rtpSrc, p.rtcpSrc, rtpbin, opusDepay, p.sink)
+	pipe.Add(p.rtpSrc, p.rtcpSrc, rtpbin, opusDepay, oggMux, p.sink)
 	p.pipeline = pipe
 
 	rtpbin.LinkFiltered(opusDepay, audioCaps)
-	opusDepay.Link(p.sink)
+	opusDepay.Link(oggMux, p.sink)
 
 	pipe.SetState(gst.STATE_PLAYING)
 	return &p
