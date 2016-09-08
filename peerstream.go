@@ -29,7 +29,7 @@ type pStream struct {
 func newPStream(conn *net.UDPConn, numMediaStreams int) *pStream {
 	stream := pStream{}
 	stream.inboundConn = conn
-	stream.assemblyLifetime = 10 * time.Second
+	stream.assemblyLifetime = 3 * time.Second
 	stream.rtpStreams = make([]rtpStream, numMediaStreams)
 	for i := 0; i < numMediaStreams; i++ {
 		stream.rtpStreams[0].RTP = make(chan []byte)
